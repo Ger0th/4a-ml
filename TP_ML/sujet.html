@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lab: Classification with Decision Trees | Labs Supervised Learning (4AE / 4IR)</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Lab: Classification with Decision Trees" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Sujets de TP sur apprentissage supervisé en 4A AE/IR" />
+<meta property="og:description" content="Sujets de TP sur apprentissage supervisé en 4A AE/IR" />
+<link rel="canonical" href="https://arbimo.github.io/tp-supervised-learning/tp1/sujet.html" />
+<meta property="og:url" content="https://arbimo.github.io/tp-supervised-learning/tp1/sujet.html" />
+<meta property="og:site_name" content="Labs Supervised Learning (4AE / 4IR)" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lab: Classification with Decision Trees" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Sujets de TP sur apprentissage supervisé en 4A AE/IR","headline":"Lab: Classification with Decision Trees","url":"https://arbimo.github.io/tp-supervised-learning/tp1/sujet.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/tp-supervised-learning/assets/css/style.css?v=df009b9e228b530092b86b500e7842453913c5dc">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/tp-supervised-learning/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="https://arbimo.github.io/tp-supervised-learning/">Labs Supervised Learning (4AE / 4IR)</a></h1>
+      
+
+      <h1 id="lab-classification-with-decision-trees">Lab: Classification with Decision Trees</h1>
+
+<p><strong>Objectives of the practical work:</strong></p>
+
+<ol>
+  <li>Learn how to build decision trees with scikit-learn  </li>
+  <li>Be familiar with some parameters and visualization tools</li>
+  <li>Use a real-case dataset (COMPASS ) as an example</li>
+  <li>Evaluate diverse trees in terms of training and testing accuracies with different parameters</li>
+  <li>Study the impact of some parameters on the sensitivity aspect</li>
+</ol>
+
+<h2 id="part-1-basic-steps">PART 1: Basic steps</h2>
+
+<p>The following are basic instructions to start with decision trees. You need to execute them one by one to understand the basic steps for learning decision trees. Once you get familiar with the different steps, you will be working on the compass dataset.</p>
+
+<p>The decision tree package that we use is from scikit-learn. The full documentation of decision trees are available at https://scikit-learn.org/stable/modules/tree.html</p>
+
+<p>Take a moment to briefly consult the documentation.</p>
+
+<p>We need first to include some libraries:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">tree</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span> <span class="c1"># for a good visualization of the trees 
+</span></code></pre></div></div>
+
+<p>The following is a basic example for binary classification</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># X is the training set 
+# Each example in X has 4 binary features
+</span><span class="n">X</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+
+<span class="c1"># Y is the classes associated with the training set. 
+# For instance the label of the first and second example is 1; of the third example is 0, etc
+</span><span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>We construct a decision tree using the default parameters:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clf</span> <span class="o">=</span> <span class="n">tree</span><span class="p">.</span><span class="n">DecisionTreeClassifier</span><span class="p">()</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">clf</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Now we can ask the decision tree to predict the outcome for unknown examples. 
+For instance we can ask a prediction for the three examples:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clf</span><span class="p">.</span><span class="n">predict</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="p">])</span>
+</code></pre></div></div>
+
+<p>The result is an array of the 3 predicted labels (one for each example): <code class="language-plaintext highlighter-rouge">array([0, 1, 0])</code></p>
+
+<h2 id="part-2--visualization">PART 2 : Visualization</h2>
+
+<p>There are many ways to visualize a decision tree. The first one is very basic:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">text_representation</span> <span class="o">=</span> <span class="n">tree</span><span class="p">.</span><span class="n">export_text</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text_representation</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can use a more readable and visual way as follows:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">tree</span><span class="p">.</span><span class="n">plot_tree</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> 
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">feature_names</span><span class="o">=</span> <span class="p">(</span><span class="s">"f1"</span><span class="p">,</span><span class="s">"f2"</span> <span class="p">,</span> <span class="s">"f3"</span><span class="p">,</span> <span class="s">"f4"</span><span class="p">),</span>
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">class_names</span><span class="o">=</span> <span class="p">(</span><span class="s">"false (0)"</span><span class="p">,</span> <span class="s">"true (1)"</span> <span class="p">),</span> 
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">filled</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Where:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">figsize</code> restrains the size of the plot,</li>
+  <li><code class="language-plaintext highlighter-rouge">feature_names</code> gives the names of the different features,</li>
+  <li><code class="language-plaintext highlighter-rouge">class_names</code> corresponds to human readable labels for each class,</li>
+  <li><code class="language-plaintext highlighter-rouge">filled</code> is a boolean indicating a preference to show a colorful tree.</li>
+</ul>
+
+<p><strong>Tasks:</strong></p>
+<ul>
+  <li>Construct manually a new binary dataset (larger than the one above), associate some labels then study the tree built by default (similar to above). Give some fancy names to the binary features and classes for a visual interpretation.</li>
+</ul>
+
+<h2 id="part-3-the-compass-dataset">PART 3: The compass dataset</h2>
+
+<p>We study here the COMPASS dataset as a case study. Recall that it has been used in a legislative context for predicting recidivism in the U.S. That is, the tendency of a convicted criminal to re-offend</p>
+
+<p>Have a look at the original non-binary dataset (<a href="https://www.kaggle.com/danofer/compass">https://www.kaggle.com/danofer/compass</a>) to understand the different features. Consider in particular the data used for fairness: propublicaCompassRecividism_data_fairml.csv</p>
+
+<p><strong>Understanding the dataset:</strong></p>
+
+<p>Take a moment to think about the following questions</p>
+
+<ul>
+  <li>What are the features?</li>
+  <li>How many examples in the dataset?</li>
+  <li>What are your expectations regarding the most important features?</li>
+  <li>Propose (informally) a way to reduce the dataset</li>
+  <li>There many ways to binarize the dataset. How do you propose to do so?</li>
+</ul>
+
+<p>Below, we use A binarized version of the dataset that is used in the FairCORELS library (https://github.com/ferryjul/fairCORELS) as well some of its tools.</p>
+
+<p>You need first to download the dataset and the tools file and put them in your work directory:</p>
+
+<ul>
+  <li>The dataset <a href="/tp-supervised-learning/tp1/compass.csv">compass.csv</a></li>
+  <li>The set of tools <a href="/tp-supervised-learning/tp1/utils.py">utils.py</a></li>
+</ul>
+
+<p>Load the binary dataset <code class="language-plaintext highlighter-rouge">compass.csv</code> as follows</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">load_from_csv</span>
+
+<span class="n">train_examples</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">prediction</span> <span class="o">=</span> <span class="n">load_from_csv</span><span class="p">(</span><span class="s">"./compass.csv"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Inspect each of these 4 objects. What do they represent? How many features? examples?</p>
+
+<p>Have a look at the different parameters of the DecisionTreeClassifier.fit function. We will be studying three parameters:</p>
+
+<ul>
+  <li>splitter</li>
+  <li>max_depth</li>
+  <li>min_samples_leaf</li>
+</ul>
+
+<p>What do they represent?</p>
+
+<p><strong>Tasks:</strong></p>
+
+<ul>
+  <li>1:  Build severals decision trees (different parameters) and visualize them</li>
+  <li>2: Run a solid evaluation on different trees (with different parameters) by randomly splitting the data 80% for training and 20% for test <em>multiple times</em>.</li>
+  <li>3: Do again the evaluation using 5-cross-validation</li>
+  <li>4: Evaluate the impact (in terms of accuracy) of the three parameters : maximum depth, splitting criterion, and the minimum sample leafs.</li>
+  <li>5: Study the confusion matrix to evaluate the True/False Positive/Negative Rate. What are the most important parameters?</li>
+  <li>6: Propose a way to assess whether the algorithm is fair to a particular ethnic group.</li>
+</ul>
+
+<h2 id="part-3-evaluation">Part 3: Evaluation</h2>
+
+<p>The exact evaluation tasks will be provided later</p>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
